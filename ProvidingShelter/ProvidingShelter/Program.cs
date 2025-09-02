@@ -1,10 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using ProvidingShelter.Application.Commands.Crawler;
-using ProvidingShelter.Application.Queries.Backend;
-using ProvidingShelter.Domain.Repositories;
 using ProvidingShelter.Infrastructure.Persistence;
-using ProvidingShelter.Infrastructure.Repositories;
-using ProvidingShelter.Infrastructure.Service.ExternalService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,13 +26,13 @@ else
 }
 
 // === DI ===
-builder.Services.AddHttpClient<DataGovCrawler>(c =>
-{
-    c.Timeout = TimeSpan.FromSeconds(30);
-});
-builder.Services.AddScoped<IDatasetRepository, DatasetRepository>();
-builder.Services.AddScoped<CrawlDatasetsCommandHandler>();
-builder.Services.AddScoped<GetDatasetResourcesQuery>();
+//builder.Services.AddHttpClient<DataGovCrawler>(c =>
+//{
+//    c.Timeout = TimeSpan.FromSeconds(30);
+//});
+//builder.Services.AddScoped<IDatasetRepository, DatasetRepository>();
+//builder.Services.AddScoped<CrawlDatasetsCommandHandler>();
+//builder.Services.AddScoped<GetDatasetResourcesQuery>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -47,22 +42,22 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 // --- Endpoints ---
-app.MapPost("/api/crawl", async (
-    CrawlDatasetsCommand cmd,
-    CrawlDatasetsCommandHandler handler,
-    CancellationToken ct) =>
-{
-    var count = await handler.HandleAsync(cmd, ct);
-    return Results.Ok(new { upserted = count });
-});
+//app.MapPost("/api/crawl", async (
+//    CrawlDatasetsCommand cmd,
+//    CrawlDatasetsCommandHandler handler,
+//    CancellationToken ct) =>
+//{
+//    var count = await handler.HandleAsync(cmd, ct);
+//    return Results.Ok(new { upserted = count });
+//});
 
-app.MapGet("/api/datasets/{dataId}/resources", async (
-    string dataId,
-    GetDatasetResourcesQuery query,
-    CancellationToken ct) =>
-{
-    var list = await query.HandleAsync(dataId, ct);
-    return Results.Ok(list);
-});
+//app.MapGet("/api/datasets/{dataId}/resources", async (
+//    string dataId,
+//    GetDatasetResourcesQuery query,
+//    CancellationToken ct) =>
+//{
+//    var list = await query.HandleAsync(dataId, ct);
+//    return Results.Ok(list);
+//});
 
 app.Run();

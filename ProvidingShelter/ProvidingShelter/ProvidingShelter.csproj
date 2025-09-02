@@ -27,4 +27,10 @@
     <ProjectReference Include="..\ProvidingShelter.Infrastructure\ProvidingShelter.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Application\Commands\" />
+    <Folder Include="Application\DTOs\" />
+    <Folder Include="Application\Queries\Backend\" />
+  </ItemGroup>
+
 </Project>

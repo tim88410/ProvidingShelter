@@ -21,4 +21,9 @@
     <ProjectReference Include="..\ProvidingShelter.Domain\ProvidingShelter.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+    <Folder Include="Service\ExternalService\" />
+  </ItemGroup>
+
 </Project>
