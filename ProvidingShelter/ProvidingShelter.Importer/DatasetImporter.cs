@@ -3,7 +3,7 @@ using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using ProvidingShelter.Domain.Aggregates.DatasetCatalog;
+using ProvidingShelter.Domain.Aggregates.DatasetAggregate;
 using ProvidingShelter.Infrastructure.Persistence;
 using System.Globalization;
 using System.IO.Compression;
@@ -12,19 +12,19 @@ using System.Text.RegularExpressions;
 
 namespace ProvidingShelter.Importer
 {
-    public sealed class CatalogImporter
+    public sealed class DatasetImporter
     {
         private readonly ShelterDbContext _db;
         private readonly IHttpClientFactory _httpFactory;
         private readonly JsonArrayAsyncReader _jsonReader;
-        private readonly ILogger<CatalogImporter> _logger;
+        private readonly ILogger<DatasetImporter> _logger;
         private readonly IConfiguration _config;
 
-        public CatalogImporter(
+        public DatasetImporter(
             ShelterDbContext db,
             IHttpClientFactory httpFactory,
             JsonArrayAsyncReader jsonReader,
-            ILogger<CatalogImporter> logger,
+            ILogger<DatasetImporter> logger,
             IConfiguration config)
         {
             _db = db;
@@ -43,13 +43,13 @@ namespace ProvidingShelter.Importer
             var localPath = importer.GetValue<string>("LocalJsonPath");
 
             // 先把 DB 現有映射載入到記憶體，避免逐筆查詢
-            var existingMap = await _db.DatasetCatalogs
+            var existingMap = await _db.Datasets
                 .AsNoTracking()
                 .Select(x => new { x.DatasetId, x.Id })
                 .ToDictionaryAsync(x => x.DatasetId, x => x.Id, StringComparer.OrdinalIgnoreCase, ct);
 
-            var toInserts = new List<DatasetCatalog>(batchSize);
-            var toUpdates = new List<DatasetCatalog>(batchSize);
+            var toInserts = new List<Dataset>(batchSize);
+            var toUpdates = new List<Dataset>(batchSize);
             var importedAt = DateTime.UtcNow;
             var totalAffected = 0;
 
@@ -84,7 +84,7 @@ namespace ProvidingShelter.Importer
             if (toInserts.Count > 0)
             {
                 _db.ChangeTracker.AutoDetectChangesEnabled = false;
-                await _db.DatasetCatalogs.AddRangeAsync(toInserts, ct);
+                await _db.Datasets.AddRangeAsync(toInserts, ct);
                 totalAffected += await _db.SaveChangesAsync(ct);
                 _db.ChangeTracker.AutoDetectChangesEnabled = true;
             }
@@ -95,7 +95,7 @@ namespace ProvidingShelter.Importer
                 _db.ChangeTracker.AutoDetectChangesEnabled = true;
             }
 
-            _logger.LogInformation("Catalog import done. Affected rows = {Total}", totalAffected);
+            _logger.LogInformation("Dataset import done. Affected rows = {Total}", totalAffected);
             return totalAffected;
 
             // ========= 內部區塊 =========
@@ -121,7 +121,7 @@ namespace ProvidingShelter.Importer
                 var fileFormats = NormalizeList(get("檔案格式"));
                 var encoding = NormalizeList(get("編碼格式"));
 
-                var entity = new DatasetCatalog(datasetId);
+                var entity = new Dataset(datasetId);
                 entity.Upsert(
                     datasetName: get("資料集名稱", "title"),
                     providerAttribute: get("資料提供屬性"),
@@ -153,7 +153,7 @@ namespace ProvidingShelter.Importer
                     if (toInserts.Count >= batchSize)
                     {
                         _db.ChangeTracker.AutoDetectChangesEnabled = false;
-                        _db.DatasetCatalogs.AddRange(toInserts);
+                        _db.Datasets.AddRange(toInserts);
                         totalAffected += _db.SaveChanges();
                         _db.ChangeTracker.AutoDetectChangesEnabled = true;
 
@@ -164,7 +164,7 @@ namespace ProvidingShelter.Importer
                 }
                 else
                 {
-                    entity.GetType().GetProperty(nameof(DatasetCatalog.Id))!
+                    entity.GetType().GetProperty(nameof(Dataset.Id))!
                           .SetValue(entity, existingMap[datasetId]);
 
                     _db.Attach(entity);

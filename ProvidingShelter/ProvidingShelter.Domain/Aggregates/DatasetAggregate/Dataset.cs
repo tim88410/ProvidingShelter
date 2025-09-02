@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ProvidingShelter.Domain.Aggregates.DatasetCatalog
+﻿namespace ProvidingShelter.Domain.Aggregates.DatasetAggregate
 {
-    public class DatasetCatalog
+    public class Dataset
     {
         public Guid Id { get; private set; } = Guid.NewGuid();
 
@@ -34,9 +28,9 @@ namespace ProvidingShelter.Domain.Aggregates.DatasetCatalog
         public string? PageUrl { get; private set; }
         public DateTime LastImportedAt { get; private set; }
 
-        private DatasetCatalog() { }
+        private Dataset() { }
 
-        public DatasetCatalog(string datasetId) => DatasetId = datasetId;
+        public Dataset(string datasetId) => DatasetId = datasetId;
 
         public void Upsert(
             string? datasetName, string? providerAttribute, string? serviceCategory, string? qualityCheck,

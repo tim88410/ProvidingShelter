@@ -44,12 +44,12 @@ builder.Services.AddHttpClient("opendata", c =>
 
 // DI
 builder.Services.AddSingleton<JsonArrayAsyncReader>();
-builder.Services.AddScoped<CatalogImporter>();
+builder.Services.AddScoped<DatasetImporter>();
 
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
-var importer = scope.ServiceProvider.GetRequiredService<CatalogImporter>();
+var importer = scope.ServiceProvider.GetRequiredService<DatasetImporter>();
 
 // 參數：--delta=true 可切換異動清單
 bool useDelta = args.Any(a => a.Equals("--delta=true", StringComparison.OrdinalIgnoreCase));

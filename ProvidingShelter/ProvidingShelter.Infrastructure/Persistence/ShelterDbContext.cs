@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProvidingShelter.Domain.Aggregates.DatasetCatalog;
+using ProvidingShelter.Domain.Aggregates.DatasetAggregate;
 
 namespace ProvidingShelter.Infrastructure.Persistence;
 
@@ -7,15 +7,14 @@ public class ShelterDbContext : DbContext
 {
     public ShelterDbContext(DbContextOptions<ShelterDbContext> options) : base(options) { }
 
-    //public DbSet<Dataset> Datasets => Set<Dataset>();
-    public DbSet<DatasetCatalog> DatasetCatalogs => Set<DatasetCatalog>();
+    public DbSet<Dataset> Datasets => Set<Dataset>();
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<DatasetCatalog>(b =>
+        modelBuilder.Entity<Dataset>(b =>
         {
-            b.ToTable("DatasetCatalogs");
+            b.ToTable("Dataset");
             b.HasKey(x => x.Id);
             b.HasIndex(x => x.DatasetId).IsUnique();
 
