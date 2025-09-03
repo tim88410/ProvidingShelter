@@ -2,20 +2,19 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ProvidingShelter.Importer;
 using ProvidingShelter.Infrastructure.Persistence;
+using ProvidingShelter.Importer;
+using ProvidingShelter.Importer.Pipeline;
 using System.Net;
-using System.IO.Compression;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-// 設定（支援環境覆寫，例如 DOTNET_ENVIRONMENT=Migrations 時會載入 appsettings.Migrations.json）
+// 設定
 builder.Configuration
     .SetBasePath(AppContext.BaseDirectory)
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-    .AddJsonFile($"appsettings.{(Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? builder.Environment.EnvironmentName)}.json", optional: true, reloadOnChange: false)
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
     .AddEnvironmentVariables()
-    .AddCommandLine(args);
+    .AddCommandLine(args); // 支援 --mode=1/2/3、--delta=true
 
 var cs = builder.Configuration.GetConnectionString("DefaultConnection")
          ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection not configured.");
@@ -23,15 +22,11 @@ var cs = builder.Configuration.GetConnectionString("DefaultConnection")
 builder.Services.AddDbContext<ShelterDbContext>(opt =>
     opt.UseSqlServer(cs, sql =>
     {
-        sql.EnableRetryOnFailure(
-            maxRetryCount: 6,
-            maxRetryDelay: TimeSpan.FromSeconds(10),
-            errorNumbersToAdd: new[] { 233, -2, 4060, 40197, 40501, 40613 }
-        );
-        sql.CommandTimeout(300);
-    }));
+        sql.EnableRetryOnFailure(3, TimeSpan.FromSeconds(5), null);
+    })
+);
 
-// HttpClient for OpenData（自動解壓）
+// HttpClient
 builder.Services.AddHttpClient("opendata", c =>
 {
     c.Timeout = TimeSpan.FromMinutes(10);
@@ -46,11 +41,29 @@ builder.Services.AddHttpClient("opendata", c =>
 builder.Services.AddSingleton<JsonArrayAsyncReader>();
 builder.Services.AddScoped<DatasetImporter>();
 
+builder.Services.AddOptions<StorageOptions>()
+    .Bind(builder.Configuration.GetSection("Storage"))
+    .ValidateDataAnnotations();
+
+builder.Services.AddOptions<FormatOptions>()
+    .Bind(builder.Configuration.GetSection("Formats"))
+    .ValidateDataAnnotations();
+
+builder.Services.AddScoped<V2DatasetClient>();
+builder.Services.AddScoped<ResourceRegistry>();
+builder.Services.AddScoped<ResourceHarvester>();
+builder.Services.AddScoped<ImporterRunner>();
+builder.Services.AddScoped<IJsonUtil, JsonUtil>();
+
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
-var importer = scope.ServiceProvider.GetRequiredService<DatasetImporter>();
+var runner = scope.ServiceProvider.GetRequiredService<ImporterRunner>();
 
-// 參數：--delta=true 可切換異動清單
-bool useDelta = args.Any(a => a.Equals("--delta=true", StringComparison.OrdinalIgnoreCase));
-await importer.RunAsync(useDelta, CancellationToken.None);
+// 參數：--mode=1/2/3（舊參數 --delta=true 仍相容：等同 mode=2）
+var modeArg = args.FirstOrDefault(a => a.StartsWith("--mode=", StringComparison.OrdinalIgnoreCase));
+int mode = 1;
+if (modeArg != null && int.TryParse(modeArg.Split('=')[1], out var m)) mode = m;
+if (args.Any(a => string.Equals(a, "--delta=true", StringComparison.OrdinalIgnoreCase))) mode = 2;
+
+await runner.RunAsync(mode, CancellationToken.None);
