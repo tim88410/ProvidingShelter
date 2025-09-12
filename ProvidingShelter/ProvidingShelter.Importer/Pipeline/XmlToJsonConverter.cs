@@ -23,7 +23,6 @@ namespace ProvidingShelter.Importer.Pipeline
 
             static object XmlToDictionary(XElement e)
             {
-                // 簡單化：屬性 + 子節點；同名子節點→陣列
                 var dict = new Dictionary<string, object?>();
                 foreach (var a in e.Attributes()) dict[$"@{a.Name.LocalName}"] = a.Value;
 

@@ -13,7 +13,6 @@ namespace ProvidingShelter.Importer
                 JsonValueKind.True => "true",
                 JsonValueKind.False => "false",
                 JsonValueKind.Null => null,
-                // 物件或陣列：保留原樣（給你需要時還原）
                 JsonValueKind.Object or JsonValueKind.Array => el.GetRawText(),
                 _ => el.GetRawText()
             };

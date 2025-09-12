@@ -30,7 +30,7 @@ namespace ProvidingShelter.Importer.Pipeline
             };
             using var csv = new CsvReader(reader, cfg);
 
-            var rows = new List<Dictionary<string, string?>>(capacity: 1000);
+            var rows = new List<Dictionary<string, string?>>(capacity: 100000);
             await csv.ReadAsync();
             csv.ReadHeader();
             var headers = csv.HeaderRecord ?? Array.Empty<string>();
@@ -41,7 +41,6 @@ namespace ProvidingShelter.Importer.Pipeline
                 var dict = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
                 foreach (var h in headers) dict[h] = csv.GetField(h);
                 rows.Add(dict);
-                if (++count >= 1000) break; // 預覽最多 1000 筆
             }
 
             return JsonSerializer.Serialize(rows, _json.Unescaped);

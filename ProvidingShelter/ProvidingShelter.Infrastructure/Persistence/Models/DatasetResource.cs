@@ -25,8 +25,10 @@ namespace ProvidingShelter.Infrastructure.Persistence.Models
 
         public long? LastKnownWireSizeBytes { get; set; }
         public long? LastKnownSavedSizeBytes { get; set; }
-
-        public byte Status { get; set; } // 0=unknown,1=ok,2=skipped,3=error
+        /// <summary>
+        /// 0=unknown,1=ok,2=skipped,3=error
+        /// </summary>
+        public byte Status { get; set; } 
         public DateTime UpdatedAtUtc { get; set; }
     }
 }

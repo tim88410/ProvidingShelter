@@ -36,7 +36,7 @@ namespace ProvidingShelter.Importer.Pipeline
 
             var headers = GetRowValues(rows[0], tableNs, textNs);
             var data = new List<Dictionary<string, string?>>();
-            for (int i = 1; i < rows.Count && i <= 1000; i++)
+            for (int i = 1; i < rows.Count && i <= 100000; i++)
             {
                 ct.ThrowIfCancellationRequested();
                 var vals = GetRowValues(rows[i], tableNs, textNs);

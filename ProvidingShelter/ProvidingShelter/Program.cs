@@ -1,5 +1,17 @@
 using Microsoft.EntityFrameworkCore;
+using ProvidingShelter.Application.Commands.Import;
+using ProvidingShelter.Application.Commands.SexualAssault.UploadSexualAssaultNationalStatistics;
+using ProvidingShelter.Common.AppSettings;
+using ProvidingShelter.Domain.Repositories;
+using ProvidingShelter.Domain.SeedWork;
+using ProvidingShelter.Infrastructure;
+using ProvidingShelter.Infrastructure.Abstractions;
 using ProvidingShelter.Infrastructure.Persistence;
+using ProvidingShelter.Infrastructure.Repositories;
+using ProvidingShelter.Infrastructure.Service;
+using ProvidingShelter.Infrastructure.Service.DomainService;
+using ProvidingShelter.Infrastructure.Service.ExternalService;
+using ProvidingShelter.Web.Adapters.Providers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,14 +37,35 @@ else
         }));
 }
 
-// === DI ===
-//builder.Services.AddHttpClient<DataGovCrawler>(c =>
-//{
-//    c.Timeout = TimeSpan.FromSeconds(30);
-//});
-//builder.Services.AddScoped<IDatasetRepository, DatasetRepository>();
-//builder.Services.AddScoped<CrawlDatasetsCommandHandler>();
-//builder.Services.AddScoped<GetDatasetResourcesQuery>();
+// 綁定 DataImportSettings（讓 IOptions<DataImportSettings> 可被注入）
+builder.Services.Configure<DataImportSettings>(
+    builder.Configuration.GetSection("DataImportSettings"));
+
+builder.Services.AddOptions<DataImportSettings.SexualAssaultSettings>()
+    .BindConfiguration("DataImportSettings:SexualAssault");
+
+// DI
+builder.Services.AddScoped<ISexualAssaultInformationRepository, SexualAssaultInformationRepository>();
+builder.Services.AddHttpClient<OdsDownloader>();
+
+builder.Services.AddScoped<ProvidingShelter.Application.Services.ISexualAssaultImportOrchestrator,
+                           ProvidingShelter.Application.Services.SexualAssaultImportOrchestrator>();
+
+builder.Services.AddSingleton<ILibreOfficeOptions, LibreOfficeOptionsProvider>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<ISexualAssaultImportRepository, SexualAssaultImportRepository>();
+
+builder.Services.AddScoped<ISexualAssaultNationalStatisticsRepository, SexualAssaultNationalStatisticsRepository>();
+
+builder.Services.AddScoped<ICityCodeResolver, CityCodeResolver>();
+
+builder.Services.AddInfrastructure();
+
+builder.Services.AddMediatR(
+    cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -41,23 +74,9 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// --- Endpoints ---
-//app.MapPost("/api/crawl", async (
-//    CrawlDatasetsCommand cmd,
-//    CrawlDatasetsCommandHandler handler,
-//    CancellationToken ct) =>
-//{
-//    var count = await handler.HandleAsync(cmd, ct);
-//    return Results.Ok(new { upserted = count });
-//});
+app.UseHttpsRedirection();
+app.UseAuthorization();
 
-//app.MapGet("/api/datasets/{dataId}/resources", async (
-//    string dataId,
-//    GetDatasetResourcesQuery query,
-//    CancellationToken ct) =>
-//{
-//    var list = await query.HandleAsync(dataId, ct);
-//    return Results.Ok(list);
-//});
+app.MapControllers();
 
 app.Run();

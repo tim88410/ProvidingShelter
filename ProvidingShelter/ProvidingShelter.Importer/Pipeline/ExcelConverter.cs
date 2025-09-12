@@ -38,7 +38,6 @@ namespace ProvidingShelter.Importer.Pipeline
                 foreach (DataColumn col in table.Columns)
                     dict[col.ColumnName] = row[col];
                 list.Add(dict);
-                if (++count >= 1000) break;
             }
             return JsonSerializer.Serialize(list, _json.Unescaped);
         }

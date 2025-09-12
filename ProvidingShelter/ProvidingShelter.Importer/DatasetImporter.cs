@@ -42,7 +42,6 @@ namespace ProvidingShelter.Importer
             var primaryUrl = importer.GetValue<string>(useDelta ? "DeltaJsonUrl" : "FullJsonUrl");
             var localPath = importer.GetValue<string>("LocalJsonPath");
 
-            // 先把 DB 現有映射載入到記憶體，避免逐筆查詢
             var existingMap = await _db.Datasets
                 .AsNoTracking()
                 .Select(x => new { x.DatasetId, x.Id })
@@ -80,7 +79,6 @@ namespace ProvidingShelter.Importer
                 }
             }
 
-            // 批次收斂
             if (toInserts.Count > 0)
             {
                 _db.ChangeTracker.AutoDetectChangesEnabled = false;
@@ -98,7 +96,6 @@ namespace ProvidingShelter.Importer
             _logger.LogInformation("Dataset import done. Affected rows = {Total}", totalAffected);
             return totalAffected;
 
-            // ========= 內部區塊 =========
 
             void UpsertOne(Dictionary<string, string?> row)
             {
@@ -182,7 +179,6 @@ namespace ProvidingShelter.Importer
             }
         }
 
-        // --- 下載 + 判斷格式（JSON/CSV/HTML） ---
         private enum PayloadFormat { Json, Csv, HtmlOrUnknown }
 
         private async Task<(IAsyncEnumerable<Dictionary<string, string?>>, PayloadFormat)>
@@ -218,7 +214,6 @@ namespace ProvidingShelter.Importer
             }
             finally
             {
-                // 不在此處 Dispose resp / s，避免列舉還沒跑完就被釋放。
             }
         }
 
@@ -241,7 +236,6 @@ namespace ProvidingShelter.Importer
             return ReadCsvStreamAsync(s, ct);
         }
 
-        // --- CSV 轉成字典（與 JSON 對齊） ---
         private async IAsyncEnumerable<Dictionary<string, string?>> ReadCsvStreamAsync(Stream stream, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken ct)
         {
             using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, leaveOpen: false);

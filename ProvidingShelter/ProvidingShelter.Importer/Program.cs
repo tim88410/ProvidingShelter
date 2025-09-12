@@ -14,7 +14,7 @@ builder.Configuration
     .SetBasePath(AppContext.BaseDirectory)
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
     .AddEnvironmentVariables()
-    .AddCommandLine(args); // 支援 --mode=1/2/3、--delta=true
+    .AddCommandLine(args); // 支援 --mode=1/2/3/4、--delta=true、--keyword=xxx
 
 var cs = builder.Configuration.GetConnectionString("DefaultConnection")
          ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection not configured.");
@@ -60,10 +60,14 @@ var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var runner = scope.ServiceProvider.GetRequiredService<ImporterRunner>();
 
-// 參數：--mode=1/2/3（舊參數 --delta=true 仍相容：等同 mode=2）
+// 參數：--mode=1/2/3/4（舊參數 --delta=true 仍相容：等同 mode=2）
 var modeArg = args.FirstOrDefault(a => a.StartsWith("--mode=", StringComparison.OrdinalIgnoreCase));
 int mode = 1;
-if (modeArg != null && int.TryParse(modeArg.Split('=')[1], out var m)) mode = m;
+if (modeArg != null && int.TryParse(modeArg.Split('=', 2)[1], out var m)) mode = m;
 if (args.Any(a => string.Equals(a, "--delta=true", StringComparison.OrdinalIgnoreCase))) mode = 2;
 
-await runner.RunAsync(mode, CancellationToken.None);
+// 只有 mode=4 會用到 --keyword=xxx
+var keywordArg = args.FirstOrDefault(a => a.StartsWith("--keyword=", StringComparison.OrdinalIgnoreCase));
+string? keyword = keywordArg?.Split('=', 2)[1];
+
+await runner.RunAsync(mode, keyword, CancellationToken.None);
