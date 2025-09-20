@@ -1,7 +1,7 @@
-﻿using System.Text.RegularExpressions;
-using ClosedXML.Excel;
+﻿using ClosedXML.Excel;
 using ProvidingShelter.Domain.Aggregates.SexualAssaultAggregate;
 using ProvidingShelter.Infrastructure.Models;
+using System.Text.RegularExpressions;
 
 namespace ProvidingShelter.Infrastructure.Service.ExternalService
 {

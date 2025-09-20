@@ -1,8 +1,8 @@
-﻿using System.Text.RegularExpressions;
-using ProvidingShelter.Domain.Entities;
+﻿using ProvidingShelter.Domain.Entities;
 using ProvidingShelter.Domain.Repositories;
 using ProvidingShelter.Infrastructure.Models;
 using ProvidingShelter.Infrastructure.Service.ExternalService;
+using System.Text.RegularExpressions;
 
 namespace ProvidingShelter.Infrastructure.Service.DomainService
 {

@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 
 namespace ProvidingShelter.Importer.Pipeline
 {
@@ -10,7 +8,7 @@ namespace ProvidingShelter.Importer.Pipeline
         public string ResourceKey { get; init; } = default!;
         public string SourceUrl { get; init; } = default!;
         public string? ContentType { get; init; }
-        public string Format { get; init; } = ""; 
+        public string Format { get; init; } = "";
         public string LocalPath { get; init; } = default!;
     }
 

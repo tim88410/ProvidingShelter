@@ -29,7 +29,7 @@ namespace ProvidingShelter.Infrastructure.Repositories
                 .Distinct() // (DownloadURL, Title) 去重
                 .Select(x => new SexualAssaultOdsDetail
                 {
-                    DownloadURL = x.DownloadURL,  
+                    DownloadURL = x.DownloadURL,
                     Title = x.Title
                 })
                 .ToListAsync(ct);

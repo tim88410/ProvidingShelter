@@ -1,9 +1,9 @@
-﻿using System.Data;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using ProvidingShelter.Domain.Entities;
 using ProvidingShelter.Domain.Repositories;
 using ProvidingShelter.Infrastructure.Persistence;
+using System.Data;
 
 namespace ProvidingShelter.Infrastructure.Repositories
 {

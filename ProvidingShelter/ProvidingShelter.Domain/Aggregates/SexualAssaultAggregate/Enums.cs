@@ -13,6 +13,7 @@
         Vietnam = 3,
         Philippines = 4,
         Malaysia = 5,
+        Other = 6,
         OtherCountry = 9
     }
 }

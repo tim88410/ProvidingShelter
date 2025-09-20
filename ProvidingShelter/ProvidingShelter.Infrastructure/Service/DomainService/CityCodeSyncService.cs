@@ -1,6 +1,4 @@
-﻿using System.Data;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProvidingShelter.Infrastructure.Persistence;
 

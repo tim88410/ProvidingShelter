@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace ProvidingShelter.Importer.Pipeline
+﻿namespace ProvidingShelter.Importer.Pipeline
 {
     public static class ResourceHarvesterOverloads
     {

@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-
-namespace ProvidingShelter.Infrastructure.Service.ExternalService
+﻿namespace ProvidingShelter.Infrastructure.Service.ExternalService
 {
     public interface IOdsDownloader
     {

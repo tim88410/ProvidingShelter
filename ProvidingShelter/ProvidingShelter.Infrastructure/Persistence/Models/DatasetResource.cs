@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ProvidingShelter.Infrastructure.Persistence.Models
+﻿namespace ProvidingShelter.Infrastructure.Persistence.Models
 {
     public class DatasetResource
     {
@@ -28,7 +26,7 @@ namespace ProvidingShelter.Infrastructure.Persistence.Models
         /// <summary>
         /// 0=unknown,1=ok,2=skipped,3=error
         /// </summary>
-        public byte Status { get; set; } 
+        public byte Status { get; set; }
         public DateTime UpdatedAtUtc { get; set; }
     }
 }

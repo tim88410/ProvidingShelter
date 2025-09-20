@@ -1,6 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.IO.Compression;
+using System.Text.Json;
 using System.Xml.Linq;
-using System.IO.Compression;
 
 namespace ProvidingShelter.Importer.Pipeline
 {

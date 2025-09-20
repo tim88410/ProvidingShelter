@@ -1,8 +1,8 @@
-﻿using System.Text.Encodings.Web;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Unicode;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ProvidingShelter.Importer.Pipeline
 {

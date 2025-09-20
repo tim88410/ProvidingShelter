@@ -1,18 +1,11 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ProvidingShelter.Infrastructure.Persistence;
 using ProvidingShelter.Infrastructure.Persistence.Models;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json.Nodes;
 
 namespace ProvidingShelter.Importer.Pipeline
 {
@@ -35,11 +28,11 @@ namespace ProvidingShelter.Importer.Pipeline
             IJsonUtil json,
             ILogger<ResourceHarvester> logger)
         {
-            _db = db; 
-            _factory = factory; 
+            _db = db;
+            _factory = factory;
             _logger = logger;
-            _storage = storage.Value; 
-            _formats = formats.Value; 
+            _storage = storage.Value;
+            _formats = formats.Value;
             _registry = registry;
             _json = json;
         }

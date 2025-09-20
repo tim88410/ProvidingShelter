@@ -1,6 +1,6 @@
 ﻿namespace ProvidingShelter.Infrastructure.Persistence.Models
 {
-    
+
     public class RisCityCode
     {
         public string ResourceUrl { get; set; } = default!;

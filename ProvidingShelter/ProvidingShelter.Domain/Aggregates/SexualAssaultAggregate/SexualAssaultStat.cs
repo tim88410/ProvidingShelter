@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ProvidingShelter.Domain.Aggregates.SexualAssaultAggregate
+﻿namespace ProvidingShelter.Domain.Aggregates.SexualAssaultAggregate
 {
     public sealed class SexualAssaultStat
     {

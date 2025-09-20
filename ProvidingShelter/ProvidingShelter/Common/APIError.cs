@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace ProvidingShelter.Common
+﻿namespace ProvidingShelter.Common
 {
     public abstract class APIError : Exception
     {

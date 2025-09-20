@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ProvidingShelter.Domain.Aggregates.SexualAssaultAggregate
+﻿namespace ProvidingShelter.Domain.Aggregates.SexualAssaultAggregate
 {
     public sealed class SexualAssaultImport
     {

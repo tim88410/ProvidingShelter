@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProvidingShelter.Application.Services;
 using ProvidingShelter.Common;
-using System.Net.Mime;
 
 namespace ProvidingShelter.Controllers
 {

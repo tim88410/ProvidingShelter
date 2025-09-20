@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ProvidingShelter.Infrastructure.Persistence.Models
+﻿namespace ProvidingShelter.Infrastructure.Persistence.Models
 {
     public class DatasetResourceFetch
     {
@@ -16,9 +14,9 @@ namespace ProvidingShelter.Infrastructure.Persistence.Models
         public string? ETag { get; set; }
         public DateTime? LastModified { get; set; }
 
-        public long? WireSizeBytes { get; set; }   
+        public long? WireSizeBytes { get; set; }
         public string? SavedPath { get; set; }
-        public long? SavedSizeBytes { get; set; } 
+        public long? SavedSizeBytes { get; set; }
 
         public string? DetectedFormat { get; set; }
         public string? Converter { get; set; }

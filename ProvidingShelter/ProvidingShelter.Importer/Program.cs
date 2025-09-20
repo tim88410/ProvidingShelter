@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ProvidingShelter.Infrastructure.Persistence;
 using ProvidingShelter.Importer;
 using ProvidingShelter.Importer.Pipeline;
+using ProvidingShelter.Infrastructure.Persistence;
 using System.Net;
 
 var builder = Host.CreateApplicationBuilder(args);
